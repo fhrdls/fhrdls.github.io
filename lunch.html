@@ -6,265 +6,283 @@
 <title>오늘의 급식</title>
 <style>
   :root {
-    --green-900: #1b4332;
-    --green-700: #2d6a4f;
-    --green-600: #40916c;
-    --green-500: #52b788;
-    --green-300: #95d5b2;
-    --green-100: #d8f3dc;
-    --bg: #f1f8f3;
+    --green-dark: #1b5e20;
+    --green-main: #2e7d32;
+    --green-mid: #4caf50;
+    --green-light: #81c784;
+    --green-pale: #e8f5e9;
   }
 
-  * { box-sizing: border-box; }
+  * {
+    box-sizing: border-box;
+  }
 
   body {
     margin: 0;
     min-height: 100vh;
-    font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-    background: linear-gradient(180deg, var(--green-100) 0%, var(--bg) 40%);
+    font-family: "Segoe UI", "Malgun Gothic", "맑은 고딕", sans-serif;
+    background: linear-gradient(160deg, var(--green-dark), var(--green-main) 45%, var(--green-mid) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 420px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 32px 16px 60px;
-    color: var(--green-900);
+    gap: 20px;
   }
 
-  header {
+  /* 상단 날짜 영역 */
+  .date-header {
     width: 100%;
-    max-width: 480px;
     text-align: center;
-    margin-bottom: 28px;
+    color: #ffffff;
   }
 
-  header .label {
-    font-size: 14px;
+  .date-header .title {
+    font-size: 15px;
+    letter-spacing: 4px;
     font-weight: 600;
-    color: var(--green-600);
-    letter-spacing: 2px;
-    text-transform: uppercase;
+    opacity: 0.85;
     margin-bottom: 6px;
   }
 
-  header .date {
+  .date-header .today {
     font-size: 26px;
     font-weight: 800;
-    color: var(--green-900);
   }
 
-  header .weekday {
-    font-size: 15px;
-    color: var(--green-700);
-    margin-top: 4px;
-    font-weight: 600;
+  .date-header .weekday {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 2px 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+    font-size: 14px;
+    vertical-align: middle;
   }
 
-  .card {
+  /* 가운데 메뉴 카드 */
+  .menu-card {
     width: 100%;
-    max-width: 480px;
     background: #ffffff;
     border-radius: 24px;
-    padding: 28px 26px 32px;
-    box-shadow: 0 12px 30px rgba(45, 106, 79, 0.15);
-    border: 1px solid var(--green-100);
+    padding: 28px 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
     position: relative;
     overflow: hidden;
   }
 
-  .card::before {
+  .menu-card::before {
     content: "";
     position: absolute;
     top: -40px;
     right: -40px;
     width: 120px;
     height: 120px;
-    background: var(--green-100);
+    background: var(--green-pale);
     border-radius: 50%;
-    opacity: 0.6;
   }
 
-  .card-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--green-700);
-    margin-bottom: 18px;
+  .menu-card::after {
+    content: "";
+    position: absolute;
+    bottom: -50px;
+    left: -50px;
+    width: 140px;
+    height: 140px;
+    background: var(--green-pale);
+    border-radius: 50%;
+  }
+
+  .menu-card .card-inner {
     position: relative;
     z-index: 1;
   }
 
-  .card-title .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--green-500);
+  .menu-card h2 {
+    margin: 0 0 4px;
+    font-size: 13px;
+    color: var(--green-main);
+    font-weight: 700;
+    letter-spacing: 2px;
+  }
+
+  .menu-card .kcal {
+    margin: 0 0 18px;
+    font-size: 12px;
+    color: #8a8a8a;
   }
 
   .menu-list {
     list-style: none;
     margin: 0;
     padding: 0;
-    position: relative;
-    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 
   .menu-list li {
-    font-size: 17px;
-    font-weight: 500;
-    color: #2b2b2b;
-    padding: 12px 0;
-    border-bottom: 1px dashed var(--green-100);
     display: flex;
     align-items: center;
     gap: 10px;
+    font-size: 17px;
+    font-weight: 600;
+    color: #263a29;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #dcefdc;
   }
 
   .menu-list li:last-child {
     border-bottom: none;
+    padding-bottom: 0;
   }
 
-  .menu-list li::before {
-    content: "🥗";
-    font-size: 15px;
+  .menu-list li .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green-mid);
+    flex-shrink: 0;
   }
 
-  .empty {
+  .empty-msg {
     text-align: center;
-    padding: 40px 10px;
-    color: var(--green-600);
+    color: #999;
     font-size: 15px;
-    font-weight: 500;
-    position: relative;
-    z-index: 1;
+    padding: 30px 0;
   }
 
-  .empty .emoji {
-    font-size: 40px;
-    display: block;
-    margin-bottom: 12px;
-  }
-
-  .kcal {
-    margin-top: 18px;
-    font-size: 13px;
-    color: var(--green-600);
-    font-weight: 600;
-    text-align: right;
-    position: relative;
-    z-index: 1;
-  }
-
-  .nav {
-    display: flex;
-    gap: 12px;
-    margin-top: 26px;
+  /* 하단 날짜 이동 버튼 */
+  .nav-row {
     width: 100%;
-    max-width: 480px;
+    display: flex;
+    gap: 10px;
   }
 
-  .nav button {
+  .nav-btn {
     flex: 1;
-    padding: 14px 0;
     border: none;
     border-radius: 14px;
-    background: var(--green-600);
-    color: #fff;
+    padding: 14px 10px;
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
     transition: background 0.15s ease, transform 0.1s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
   }
 
-  .nav button:hover {
-    background: var(--green-700);
+  .nav-btn:hover {
+    background: rgba(255, 255, 255, 0.28);
   }
 
-  .nav button:active {
-    transform: scale(0.97);
+  .nav-btn:active {
+    transform: scale(0.96);
   }
 
-  .nav button.today {
-    background: var(--green-500);
+  .nav-btn.today-btn {
+    background: #ffffff;
+    color: var(--green-dark);
   }
 
-  footer {
-    margin-top: 30px;
-    font-size: 12px;
-    color: var(--green-600);
-    opacity: 0.8;
+  .nav-btn.today-btn:hover {
+    background: var(--green-pale);
   }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="label">오늘의 급식</div>
-  <div class="date" id="dateText">-</div>
-  <div class="weekday" id="weekdayText">-</div>
-</header>
+  <div class="app">
+    <div class="date-header">
+      <div class="title">오늘의 급식</div>
+      <div class="today">
+        <span id="dateText"></span>
+        <span class="weekday" id="weekdayText"></span>
+      </div>
+    </div>
 
-<div class="card">
-  <div class="card-title"><span class="dot"></span> 급식 메뉴</div>
-  <div id="menuArea"></div>
-  <div class="kcal" id="kcalText"></div>
-</div>
+    <div class="menu-card">
+      <div class="card-inner">
+        <h2>MENU</h2>
+        <p class="kcal" id="kcalText"></p>
+        <ul class="menu-list" id="menuList"></ul>
+        <p class="empty-msg" id="emptyMsg" style="display:none;">급식 정보가 없습니다 🍃</p>
+      </div>
+    </div>
 
-<div class="nav">
-  <button id="prevBtn">◀ 이전 날짜</button>
-  <button id="todayBtn" class="today">오늘</button>
-  <button id="nextBtn">다음 날짜 ▶</button>
-</div>
-
-<footer>학교 급식 정보는 실제 학교 식단과 다를 수 있습니다.</footer>
+    <div class="nav-row">
+      <button class="nav-btn" id="prevBtn">◀ 이전 날짜</button>
+      <button class="nav-btn today-btn" id="todayBtn">오늘</button>
+      <button class="nav-btn" id="nextBtn">다음 날짜 ▶</button>
+    </div>
+  </div>
 
 <script>
-  // 날짜별 급식 데이터 (예시 데이터 - 실제 데이터로 교체 가능)
-  const mealData = {
-    "2026-07-22": { menu: ["잡곡밥", "미역국", "제육볶음", "계란말이", "배추김치"], kcal: 720 },
-    "2026-07-23": { menu: ["카레라이스", "유부장국", "치킨너겟", "단무지무침", "깍두기"], kcal: 780 },
-    "2026-07-24": { menu: ["흑미밥", "된장찌개", "돈까스", "쌈채소", "포기김치", "요구르트"], kcal: 810 },
-    "2026-07-25": { menu: ["보리밥", "콩나물국", "고등어구이", "감자조림", "배추김치"], kcal: 690 },
-    "2026-07-27": { menu: ["볶음밥", "달걀국", "탕수육", "오이무침", "깍두기"], kcal: 750 }
-  };
+  // 샘플 급식 메뉴 데이터 (실제 서비스에서는 학교 급식 API 연동 가능)
+  const sampleMenus = [
+    { menu: ["잡곡밥", "미역국", "제육볶음", "계란찜", "배추김치"], kcal: 812 },
+    { menu: ["흑미밥", "된장찌개", "고등어구이", "시금치나물", "깍두기"], kcal: 765 },
+    { menu: ["카레라이스", "유부장국", "탕수육", "단무지무침", "포기김치"], kcal: 890 },
+    { menu: ["보리밥", "순두부찌개", "닭갈비", "콩나물무침", "총각김치"], kcal: 780 },
+    { menu: ["백미밥", "김치찌개", "돈까스", "브로콜리 초회", "무생채"], kcal: 845 },
+    { menu: ["짜장밥", "계란국", "탕수만두", "오이무침", "단무지"], kcal: 830 },
+    { menu: ["오므라이스", "미소국", "치킨너겟", "양상추샐러드", "피클"], kcal: 800 }
+  ];
+
+  const dateTextEl = document.getElementById("dateText");
+  const weekdayTextEl = document.getElementById("weekdayText");
+  const menuListEl = document.getElementById("menuList");
+  const kcalTextEl = document.getElementById("kcalText");
+  const emptyMsgEl = document.getElementById("emptyMsg");
 
   const weekdayNames = ["일", "월", "화", "수", "목", "금", "토"];
 
-  function toKey(d) {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${y}-${m}-${day}`;
+  let currentDate = new Date();
+
+  function formatDate(date) {
+    const y = date.getFullYear();
+    const m = date.getMonth() + 1;
+    const d = date.getDate();
+    return `${y}년 ${m}월 ${d}일`;
   }
 
-  let currentDate = new Date(2026, 6, 24); // 2026-07-24 (오늘 기준값)
+  function getMenuForDate(date) {
+    const day = date.getDay(); // 0: 일, 6: 토 -> 주말은 급식 없음
+    if (day === 0 || day === 6) return null;
+
+    // 날짜를 기준으로 샘플 메뉴 중 하나를 결정적으로 선택
+    const seed = date.getFullYear() * 372 + date.getMonth() * 31 + date.getDate();
+    return sampleMenus[seed % sampleMenus.length];
+  }
 
   function render() {
-    const key = toKey(currentDate);
-    document.getElementById("dateText").textContent =
-      `${currentDate.getFullYear()}년 ${currentDate.getMonth() + 1}월 ${currentDate.getDate()}일`;
-    document.getElementById("weekdayText").textContent =
-      `${weekdayNames[currentDate.getDay()]}요일`;
+    dateTextEl.textContent = formatDate(currentDate);
+    weekdayTextEl.textContent = weekdayNames[currentDate.getDay()] + "요일";
 
-    const menuArea = document.getElementById("menuArea");
-    const kcalText = document.getElementById("kcalText");
-    const data = mealData[key];
+    const data = getMenuForDate(currentDate);
 
-    if (data) {
-      menuArea.innerHTML =
-        `<ul class="menu-list">` +
-        data.menu.map(item => `<li>${item}</li>`).join("") +
-        `</ul>`;
-      kcalText.textContent = `열량 ${data.kcal} kcal`;
-    } else {
-      menuArea.innerHTML =
-        `<div class="empty"><span class="emoji">🍽️</span>등록된 급식 정보가 없어요</div>`;
-      kcalText.textContent = "";
+    if (!data) {
+      menuListEl.style.display = "none";
+      kcalTextEl.style.display = "none";
+      emptyMsgEl.style.display = "block";
+      return;
     }
+
+    menuListEl.style.display = "flex";
+    kcalTextEl.style.display = "block";
+    emptyMsgEl.style.display = "none";
+
+    kcalTextEl.textContent = `${data.kcal} kcal`;
+    menuListEl.innerHTML = data.menu
+      .map(item => `<li><span class="dot"></span>${item}</li>`)
+      .join("");
   }
 
   document.getElementById("prevBtn").addEventListener("click", () => {
@@ -278,7 +296,7 @@
   });
 
   document.getElementById("todayBtn").addEventListener("click", () => {
-    currentDate = new Date(2026, 6, 24);
+    currentDate = new Date();
     render();
   });
 
