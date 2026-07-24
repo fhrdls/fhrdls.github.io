@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>오늘의 급식</title>
+<style>
+  :root {
+    --green-900: #1b4332;
+    --green-700: #2d6a4f;
+    --green-600: #40916c;
+    --green-500: #52b788;
+    --green-300: #95d5b2;
+    --green-100: #d8f3dc;
+    --bg: #f1f8f3;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    background: linear-gradient(180deg, var(--green-100) 0%, var(--bg) 40%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px 60px;
+    color: var(--green-900);
+  }
+
+  header {
+    width: 100%;
+    max-width: 480px;
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  header .label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--green-600);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  header .date {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--green-900);
+  }
+
+  header .weekday {
+    font-size: 15px;
+    color: var(--green-700);
+    margin-top: 4px;
+    font-weight: 600;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 480px;
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 28px 26px 32px;
+    box-shadow: 0 12px 30px rgba(45, 106, 79, 0.15);
+    border: 1px solid var(--green-100);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: "";
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 120px;
+    height: 120px;
+    background: var(--green-100);
+    border-radius: 50%;
+    opacity: 0.6;
+  }
+
+  .card-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--green-700);
+    margin-bottom: 18px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .card-title .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--green-500);
+  }
+
+  .menu-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .menu-list li {
+    font-size: 17px;
+    font-weight: 500;
+    color: #2b2b2b;
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--green-100);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .menu-list li:last-child {
+    border-bottom: none;
+  }
+
+  .menu-list li::before {
+    content: "🥗";
+    font-size: 15px;
+  }
+
+  .empty {
+    text-align: center;
+    padding: 40px 10px;
+    color: var(--green-600);
+    font-size: 15px;
+    font-weight: 500;
+    position: relative;
+    z-index: 1;
+  }
+
+  .empty .emoji {
+    font-size: 40px;
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .kcal {
+    margin-top: 18px;
+    font-size: 13px;
+    color: var(--green-600);
+    font-weight: 600;
+    text-align: right;
+    position: relative;
+    z-index: 1;
+  }
+
+  .nav {
+    display: flex;
+    gap: 12px;
+    margin-top: 26px;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .nav button {
+    flex: 1;
+    padding: 14px 0;
+    border: none;
+    border-radius: 14px;
+    background: var(--green-600);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .nav button:hover {
+    background: var(--green-700);
+  }
+
+  .nav button:active {
+    transform: scale(0.97);
+  }
+
+  .nav button.today {
+    background: var(--green-500);
+  }
+
+  footer {
+    margin-top: 30px;
+    font-size: 12px;
+    color: var(--green-600);
+    opacity: 0.8;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="label">오늘의 급식</div>
+  <div class="date" id="dateText">-</div>
+  <div class="weekday" id="weekdayText">-</div>
+</header>
+
+<div class="card">
+  <div class="card-title"><span class="dot"></span> 급식 메뉴</div>
+  <div id="menuArea"></div>
+  <div class="kcal" id="kcalText"></div>
+</div>
+
+<div class="nav">
+  <button id="prevBtn">◀ 이전 날짜</button>
+  <button id="todayBtn" class="today">오늘</button>
+  <button id="nextBtn">다음 날짜 ▶</button>
+</div>
+
+<footer>학교 급식 정보는 실제 학교 식단과 다를 수 있습니다.</footer>
+
+<script>
+  // 날짜별 급식 데이터 (예시 데이터 - 실제 데이터로 교체 가능)
+  const mealData = {
+    "2026-07-22": { menu: ["잡곡밥", "미역국", "제육볶음", "계란말이", "배추김치"], kcal: 720 },
+    "2026-07-23": { menu: ["카레라이스", "유부장국", "치킨너겟", "단무지무침", "깍두기"], kcal: 780 },
+    "2026-07-24": { menu: ["흑미밥", "된장찌개", "돈까스", "쌈채소", "포기김치", "요구르트"], kcal: 810 },
+    "2026-07-25": { menu: ["보리밥", "콩나물국", "고등어구이", "감자조림", "배추김치"], kcal: 690 },
+    "2026-07-27": { menu: ["볶음밥", "달걀국", "탕수육", "오이무침", "깍두기"], kcal: 750 }
+  };
+
+  const weekdayNames = ["일", "월", "화", "수", "목", "금", "토"];
+
+  function toKey(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  }
+
+  let currentDate = new Date(2026, 6, 24); // 2026-07-24 (오늘 기준값)
+
+  function render() {
+    const key = toKey(currentDate);
+    document.getElementById("dateText").textContent =
+      `${currentDate.getFullYear()}년 ${currentDate.getMonth() + 1}월 ${currentDate.getDate()}일`;
+    document.getElementById("weekdayText").textContent =
+      `${weekdayNames[currentDate.getDay()]}요일`;
+
+    const menuArea = document.getElementById("menuArea");
+    const kcalText = document.getElementById("kcalText");
+    const data = mealData[key];
+
+    if (data) {
+      menuArea.innerHTML =
+        `<ul class="menu-list">` +
+        data.menu.map(item => `<li>${item}</li>`).join("") +
+        `</ul>`;
+      kcalText.textContent = `열량 ${data.kcal} kcal`;
+    } else {
+      menuArea.innerHTML =
+        `<div class="empty"><span class="emoji">🍽️</span>등록된 급식 정보가 없어요</div>`;
+      kcalText.textContent = "";
+    }
+  }
+
+  document.getElementById("prevBtn").addEventListener("click", () => {
+    currentDate.setDate(currentDate.getDate() - 1);
+    render();
+  });
+
+  document.getElementById("nextBtn").addEventListener("click", () => {
+    currentDate.setDate(currentDate.getDate() + 1);
+    render();
+  });
+
+  document.getElementById("todayBtn").addEventListener("click", () => {
+    currentDate = new Date(2026, 6, 24);
+    render();
+  });
+
+  render();
+</script>
+
+</body>
+</html>
